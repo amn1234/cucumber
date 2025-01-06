@@ -50,3 +50,17 @@ jobs:
           echo "Starting Karate tests..."
           cd CucumberJavaProject
           mvn clean test -Dtest=KarateTestRunner -X
+
+      # Archive the Karate HTML report
+      - name: Archive Karate HTML Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: karate-reports
+          path: CucumberJavaProject/target/karate-reports/karate-summary.html
+
+      # Optional: Archive the entire Karate reports directory for complete results
+      - name: Archive Full Karate Report Directory
+        uses: actions/upload-artifact@v3
+        with:
+          name: karate-full-reports
+          path: CucumberJavaProject/target/karate-reports/
