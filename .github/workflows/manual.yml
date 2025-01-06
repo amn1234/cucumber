@@ -38,12 +38,15 @@ jobs:
       - name: Install Maven
         run: sudo apt-get install -y maven
 
-      # Print working directory for verification
-      - name: Print working directory
-        run: pwd
-
-      # Run the tests with TestRunner explicitly specified
+      # Change directory to the project directory and run tests
       - name: Run Cucumber Tests
         run: |
-          cd CucumberJavaProject
+          # Print working directory for debugging
+          pwd
+          ls -al
+
+          # Run the tests from the correct directory
+          cd CucumberJavaProject  # Change directory to where the pom.xml is located
+          
+          # Run the tests with TestRunner
           mvn clean test -Dtest=testRunners.TestRunner -X
