@@ -18,12 +18,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Set up JDK 11 (required for running Maven and Cucumber)
-      - name: Set up JDK 11
+      # Set up JDK 17 (required for running Maven and Cucumber)
+      - name: Set up JDK 17
         uses: actions/setup-java@v2
         with:
-          java-version: '11'
-          distribution: 'temurin'  # Use temurin instead of adoptopenjdk
+          java-version: '17'
+          distribution: 'temurin'  # Use Temurin distribution for JDK 17
 
       # Cache Maven dependencies to speed up builds
       - name: Cache Maven dependencies
@@ -38,7 +38,7 @@ jobs:
       - name: Install Maven
         run: sudo apt-get install -y maven
 
-      # Change directory to CucumberJavaProject and run the Maven test
+      # Run the specific login.feature file using Maven
       - name: Run Cucumber Test for login.feature
         run: |
           cd CucumberJavaProject
