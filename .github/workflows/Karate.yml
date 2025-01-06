@@ -1,4 +1,4 @@
-name: Run Cucumber Tests
+name: Run Karate Tests
 
 on:
   push:
