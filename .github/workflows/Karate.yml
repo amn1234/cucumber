@@ -38,18 +38,21 @@ jobs:
       - name: Install Maven
         run: sudo apt-get install -y maven
 
+      # Verify if the feature file exists and list files for debugging
+      - name: Verify if api_test.feature exists
+        run: |
+          echo "Checking if feature file exists"
+          ls -al CucumberJavaProject/src/test/resources/Features/api_test.feature
+
       # Print current directory and list files for debugging
       - name: Print current directory and files
         run: |
           pwd
           ls -al
-          # List files inside CucumberJavaProject folder to ensure it's being located correctly
-          ls -al CucumberJavaProject
+          ls -al CucumberJavaProject/src/test/resources
 
-      # Change directory to where pom.xml is located and run Karate tests
+      # Run Karate Test for api_test.feature
       - name: Run Karate Test for api_test.feature
         run: |
           cd CucumberJavaProject
-          # Run Maven tests with additional debug info
-          mvn clean test -Dcucumber.options="src/test/resources/Features/api_test.feature" -X
-
+          mvn clean verify -Dcucumber.options="src/test/resources/Features/api_test.feature" -X
