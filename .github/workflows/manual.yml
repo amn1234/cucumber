@@ -38,6 +38,10 @@ jobs:
       - name: Install Maven
         run: sudo apt-get install -y maven
 
+      # Change directory to where pom.xml is located (if it's in a subfolder like CucumberJavaProject)
+      - name: Change directory to project folder
+        run: cd CucumberJavaProject
+
       # Run the specific login.feature file using Maven
       - name: Run Cucumber Test for login.feature
         run: mvn clean test -Dcucumber.options="src/test/resources/Features/login.feature"
