@@ -38,9 +38,19 @@ jobs:
       - name: Install Maven
         run: sudo apt-get install -y maven
 
-      # Change directory to where pom.xml is located (if it's in a subfolder like CucumberJavaProject)
-      - name: Change directory to project folder
+      # Debugging step: Print current directory and list files
+      - name: Print current directory and list files
+        run: |
+          pwd
+          ls -l
+
+      # If pom.xml is in a subfolder like CucumberJavaProject, change directory
+      - name: Change directory to CucumberJavaProject
         run: cd CucumberJavaProject
+
+      # Print the directory contents after changing to CucumberJavaProject (debugging)
+      - name: List files in CucumberJavaProject
+        run: ls -l
 
       # Run the specific login.feature file using Maven
       - name: Run Cucumber Test for login.feature
