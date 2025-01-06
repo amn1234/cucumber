@@ -41,12 +41,12 @@ jobs:
       # Change directory to the project directory and run tests
       - name: Run Cucumber Tests
         run: |
-          # Print working directory for debugging
+          # Print working directory and list files for debugging
           pwd
           ls -al
-
-          # Run the tests from the correct directory
-          cd CucumberJavaProject  # Change directory to where the pom.xml is located
           
-          # Run the tests with TestRunner
+          # Change directory to where pom.xml is located
+          cd CucumberJavaProject  # Assuming your project folder is CucumberJavaProject
+          
+          # Run the tests with TestRunner and enable debugging output for more info
           mvn clean test -Dtest=testRunners.TestRunner -X
