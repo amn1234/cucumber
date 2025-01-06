@@ -10,49 +10,43 @@ on:
   workflow_dispatch:  # Enables manual trigger from GitHub UI
 
 jobs:
-  cucumber-tests:
+  karate-tests:
     runs-on: ubuntu-latest
 
     steps:
       # Checkout the repository code
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       # Set up JDK 21 (required for running Maven and Karate)
       - name: Set up JDK 21
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           java-version: '21'
           distribution: 'temurin'  # JDK 21 provided by temurin
-
-      # Cache Maven dependencies to speed up builds
-      - name: Cache Maven dependencies
-        uses: actions/cache@v2
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          cache: maven
 
       # Install Maven
       - name: Install Maven
-        run: sudo apt-get install -y maven
+        run: sudo apt-get update && sudo apt-get install -y maven
 
       # Verify if the feature file exists and list files for debugging
       - name: Verify if api_test.feature exists
         run: |
           echo "Checking if feature file exists"
-          ls -al CucumberJavaProject/src/test/resources/Features/api_test.feature
+          ls -al CucumberJavaProject/src/test/resources/Features/api_test.feature || echo "Feature file not found!"
 
       # Print current directory and list files for debugging
       - name: Print current directory and files
         run: |
+          echo "Printing working directory and listing files..."
           pwd
           ls -al
-          ls -al CucumberJavaProject/src/test/resources
+          ls -al CucumberJavaProject/src/test/resources/Features
 
       # Run Karate Test for api_test.feature
       - name: Run Karate Test for api_test.feature
         run: |
+          echo "Starting Karate tests..."
           cd CucumberJavaProject
-          mvn clean verify -Dcucumber.options="src/test/resources/Features/api_test.feature" -X
+          mvn clean test -Dtest=KarateTestRunner -X
