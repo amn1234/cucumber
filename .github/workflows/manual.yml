@@ -38,8 +38,8 @@ jobs:
       - name: Install Maven
         run: sudo apt-get install -y maven
 
-      # Run the specific login.feature file using Maven
-      - name: Run Cucumber Test for login.feature
+      # Run the Cucumber Test Runner class using Maven
+      - name: Run Cucumber Test Runner
         run: |
           cd CucumberJavaProject
-          mvn clean test -Dcucumber.options="src/test/resources/Features/login.feature"
+          mvn clean test -DtestRunners.TestRunner
