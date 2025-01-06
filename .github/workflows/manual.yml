@@ -38,8 +38,12 @@ jobs:
       - name: Install Maven
         run: sudo apt-get install -y maven
 
-      # Run the Cucumber Test Runner class using Maven
-      - name: Run Cucumber Test Runner
+      # Print working directory for verification
+      - name: Print working directory
+        run: pwd
+
+      # Run the tests with TestRunner explicitly specified
+      - name: Run Cucumber Tests
         run: |
           cd CucumberJavaProject
-          mvn clean test -DtestRunners.TestRunner
+          mvn clean test -Dtest=testRunners.TestRunner -X
