@@ -3,10 +3,10 @@ name: Run RBT
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
     branches:
-      - main
+      - master
   workflow_dispatch:       # manual trigger
   schedule:                # nightly at 02:00 UTC
     - cron: '0 2 * * *'
