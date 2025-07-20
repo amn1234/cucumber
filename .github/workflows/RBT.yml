@@ -1,0 +1,75 @@
+name: Run Karate Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:       # manual trigger
+  schedule:                # nightly at 02:00 UTC
+    - cron: '0 2 * * *'
+
+jobs:
+  karate-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Install Maven
+        run: sudo apt-get update && sudo apt-get install -y maven
+
+      - name: Verify if api_test.feature exists
+        run: |
+          echo "Checking if feature file exists"
+          ls -al CucumberJavaProject/src/test/resources/Features/api_test.feature || echo "Feature file not found!"
+
+      - name: Print current directory and files
+        run: |
+          echo "Printing working directory and listing files..."
+          pwd
+          ls -al
+          ls -al CucumberJavaProject/src/test/resources/Features
+
+      - name: Run Karate Test for api_test.feature
+        run: |
+          echo "Starting Karate tests..."
+          cd CucumberJavaProject
+          mvn clean test -Dtest=KarateTestRunner -X
+
+      - name: Archive Karate HTML Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: karate-reports
+          path: CucumberJavaProject/target/karate-reports/karate-summary.html
+
+      - name: Archive Full Karate Report Directory
+        uses: actions/upload-artifact@v4
+        with:
+          name: karate-full-reports
+          path: CucumberJavaProject/target/karate-reports/
+
+  run-tests:
+    runs-on: ubuntu-latest
+    needs: karate-tests
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run high-risk tests
+        run: mvn test -Dkarate.options="--tags @risk_high"
+
+      - name: Run medium/low risk tests
+        if: ${{ github.event_name == 'schedule' }}
+        run: mvn test -Dkarate.options="--tags @risk_medium,@risk_low"
