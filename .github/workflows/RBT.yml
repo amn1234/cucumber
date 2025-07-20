@@ -80,7 +80,7 @@ jobs:
       - name: Run high-risk tests
         run: |
           cd CucumberJavaProject
-          mvn test -Dkarate.options="--tags @risk_high"
+          mvn test -Dtest=KarateTestRunner2 -Dkarate.options="--tags @risk_high"
 
       - name: Run medium/low risk tests
         if: ${{ github.event_name == 'schedule' }}
