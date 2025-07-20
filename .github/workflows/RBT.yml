@@ -1,4 +1,4 @@
-name: Run Karate Tests
+name: Run RBT
 
 on:
   push:
