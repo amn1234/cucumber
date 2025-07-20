@@ -28,6 +28,7 @@ public class LoginSteps {
     // Duplicate step definition for: Given the user is on the login page
     // This method launches the Chrome browser and opens the login page using a hardcoded driver path.
    // @Given("the user is on the login page")
+   //test comment
     //public void userIsOnLoginPage() {
         //System.setProperty("webdriver.chrome.driver", "path_to_your_chromedriver");  // Set path to ChromeDriver
         //System.setProperty("webdriver.chrome.driver", "C:\\Automation\\Selenium\\SeleniumJava\\Driver\\chromedriver.exe");
