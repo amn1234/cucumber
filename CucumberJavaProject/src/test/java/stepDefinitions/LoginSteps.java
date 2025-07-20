@@ -9,20 +9,31 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
 import static org.junit.Assert.*;
+import io.github.bonigarcia.wdm.WebDriverManager;
 
 public class LoginSteps {
-    
-    WebDriver driver = new ChromeDriver();  // Create WebDriver instance
+
+    WebDriver driver;
 
     // Step 1: Given the user is on the login page
     @Given("the user is on the login page")
     public void userIsOnLoginPage() {
-        // Launching the Chrome browser and opening the login page
-        //System.setProperty("webdriver.chrome.driver", "path_to_your_chromedriver");  // Set path to ChromeDriver
-    	System.setProperty("webdriver.chrome.driver", "C:\\Automation\\Selenium\\SeleniumJava\\Driver\\chromedriver.exe");
-    	driver.get("http://testphp.vulnweb.com/login.php");  // Replace with your login page URL
-        driver.manage().window().maximize();  // Maximize the browser window
+        WebDriverManager.chromedriver().setup();
+        driver = new ChromeDriver();
+        driver.get("http://testphp.vulnweb.com/login.php");
+        driver.manage().window().maximize();
     }
+
+    // Step 1: Given the user is on the login page
+    // Duplicate step definition for: Given the user is on the login page
+    // This method launches the Chrome browser and opens the login page using a hardcoded driver path.
+   // @Given("the user is on the login page")
+    //public void userIsOnLoginPage() {
+        //System.setProperty("webdriver.chrome.driver", "path_to_your_chromedriver");  // Set path to ChromeDriver
+        //System.setProperty("webdriver.chrome.driver", "C:\\Automation\\Selenium\\SeleniumJava\\Driver\\chromedriver.exe");
+        //driver.get("http://testphp.vulnweb.com/login.php");  // Replace with your login page URL
+        //driver.manage().window().maximize();  // Maximize the browser window
+    //}
 
     // Step 2: When the user enters a valid username and password
     @When("the user enters a valid username and password")
