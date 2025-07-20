@@ -1,4 +1,4 @@
-name: Run Karate Tests
+name: Run RBT
 
 on:
   push:
@@ -67,9 +67,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Install Maven
+        run: sudo apt-get update && sudo apt-get install -y maven
+
       - name: Run high-risk tests
-        run: mvn test -Dkarate.options="--tags @risk_high"
+        run: |
+          cd CucumberJavaProject
+          mvn test -Dkarate.options="--tags @risk_high"
 
       - name: Run medium/low risk tests
         if: ${{ github.event_name == 'schedule' }}
-        run: mvn test -Dkarate.options="--tags @risk_medium,@risk_low"
+        run: |
+          cd CucumberJavaProject
+          mvn test -Dkarate.options="--tags @risk_medium,@risk_low"
