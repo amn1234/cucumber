@@ -29,10 +29,10 @@ jobs:
       - name: Install Maven
         run: sudo apt-get update && sudo apt-get install -y maven
 
-      - name: Verify if api_test.feature exists
+      - name: Verify if api_test2.feature exists
         run: |
           echo "Checking if feature file exists"
-          ls -al CucumberJavaProject/src/test/resources/Features/api_test.feature || echo "Feature file not found!"
+          ls -al CucumberJavaProject/src/test/resources/Features/api_test2.feature || echo "Feature file not found!"
 
       - name: Print current directory and files
         run: |
@@ -41,7 +41,7 @@ jobs:
           ls -al
           ls -al CucumberJavaProject/src/test/resources/Features
 
-      - name: Run Karate Test for api_test.feature
+      - name: Run Karate Test for api_test2.feature
         run: |
           echo "Starting Karate tests..."
           cd CucumberJavaProject
