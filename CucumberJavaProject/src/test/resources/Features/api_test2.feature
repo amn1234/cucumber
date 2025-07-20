@@ -23,3 +23,5 @@ Scenario: Retrieve Created Post
     And match response.id == 1
     #And match response.title == 'foo'
     And match response.title == 'sunt aut facere repellat provident occaecati excepturi optio reprehenderit'
+
+    

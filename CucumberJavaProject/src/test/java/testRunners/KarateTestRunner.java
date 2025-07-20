@@ -6,6 +6,6 @@ class KarateTestRunner {
 
     @Karate.Test
     Karate testLoginAPI() {
-        return Karate.run("classpath:features/api_test.feature").relativeTo(getClass());
+        return Karate.run("classpath:Features/api_test.feature").relativeTo(getClass());
     }
 }
