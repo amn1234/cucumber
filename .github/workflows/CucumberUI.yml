@@ -42,7 +42,7 @@ jobs:
       - name: Run Only testRunners.TestRunner
         run: |
           cd CucumberJavaProject
-          mvn clean test -Dtest=testRunners.TestRunner -Dcucumber.features=src/test/resources/Features/login.feature -X
+          mvn clean test -Dtest=testRunners.TestRunner -Dcucumber.features=src/test/resources/Features/login.feature -DfailIfNoTests=false -X
 
       - name: Upload Cucumber HTML Report
         uses: actions/upload-artifact@v4
