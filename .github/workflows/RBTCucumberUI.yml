@@ -1,0 +1,78 @@
+name: Run Login RBT
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+    inputs:
+      risk:
+        description: 'Risk Level to Test'
+        required: true
+        default: 'high'
+        type: choice
+        options:
+          - high
+          - medium
+          - low
+  schedule:
+    - cron: '0 22 * * *'  # Runs every day at 10 PM UTC
+
+jobs:
+  cucumber-tests:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        risk: [high, medium, low]
+
+    # Control execution based on trigger type and matrix risk level
+    if: |
+      github.event_name == 'push' || 
+      github.event_name == 'pull_request' || 
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.risk == matrix.risk) || 
+      (github.event_name == 'schedule')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Install Maven
+        run: sudo apt-get update && sudo apt-get install -y maven
+
+      - name: Debug Directory Structure
+        run: |
+          echo "Root directory contents:"
+          ls -al
+          echo "Features directory contents:"
+          ls -al CucumberJavaProject/src/test/resources/Features || echo "Missing features folder!"
+
+      - name: List Test Classes
+        run: |
+          echo "Listing Java test classes:"
+          find CucumberJavaProject/src/test/java -name "*Test*.java" || echo "No test classes found!"
+
+      - name: Run Cucumber Tests for Risk Level
+        run: |
+          cd CucumberJavaProject
+          mvn clean test -Dcucumber.filter.tags="@risk_${{ matrix.risk }}" -Dheadless=true -X
+
+      - name: Upload Cucumber HTML Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: cucumber-html-report-${{ matrix.risk }}
+          path: CucumberJavaProject/target/cucumber-reports/cucumber-html-report.html
+
+      - name: Upload Full Cucumber Report Directory
+        uses: actions/upload-artifact@v4
+        with:
+          name: cucumber-full-reports-${{ matrix.risk }}
+          path: CucumberJavaProject/target/cucumber-reports/
