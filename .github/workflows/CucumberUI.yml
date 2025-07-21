@@ -1,4 +1,4 @@
-name: Run Cucumber Feature
+name: Run Login Feature Tests
 
 on:
   push:
@@ -39,18 +39,18 @@ jobs:
           echo "Listing Java test classes:"
           find CucumberJavaProject/src/test/java -name "*Test*.java" || echo "No test classes found!"
 
-      - name: Run Only TestRunnerTest
+      - name: Run All Tests
         run: |
           cd CucumberJavaProject
-          mvn clean test -Dtest=testRunners.TestRunnerTest -X
+          mvn clean test -X
 
       - name: Upload Cucumber HTML Report
         uses: actions/upload-artifact@v4
         with:
-          name: cucumber-report
+          name: cucumber-html-report
           path: CucumberJavaProject/target/cucumber-reports/cucumber-html-report.html
 
-      - name: Upload Full Report Directory
+      - name: Upload Full Cucumber Report Directory
         uses: actions/upload-artifact@v4
         with:
           name: cucumber-full-reports
