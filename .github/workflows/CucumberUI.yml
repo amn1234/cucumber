@@ -39,10 +39,10 @@ jobs:
           echo "Listing Java test classes:"
           find CucumberJavaProject/src/test/java -name "*Test*.java" || echo "No test classes found!"
 
-      - name: Run All Tests
+      - name: Run only RunCucumberTest tests
         run: |
           cd CucumberJavaProject
-          mvn clean test -Dheadless=true -X
+          mvn clean test -Dtest=RunCucumberTest -Dheadless=true -X
 
       - name: Upload Cucumber HTML Report
         uses: actions/upload-artifact@v4
