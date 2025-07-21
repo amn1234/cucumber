@@ -4,6 +4,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import io.cucumber.java.After;
 import io.cucumber.java.en.Given;
@@ -11,7 +12,6 @@ import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
 import static org.junit.Assert.*;
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import java.time.Duration;
 import java.util.List;
@@ -19,23 +19,30 @@ import java.util.List;
 public class LoginSteps {
 
     WebDriver driver;
+
     // Step 1: Given the user is on the login page
     @Given("the user is on the login page")
     public void userIsOnLoginPage() {
         WebDriverManager.chromedriver().setup();
-        driver = new ChromeDriver();
+
+        // ✅ Added headless Chrome support
+        ChromeOptions options = new ChromeOptions();
+        if (Boolean.getBoolean("headless")) {
+            options.addArguments("--headless=new");
+            options.addArguments("--disable-gpu");
+            options.addArguments("--window-size=1920,1080");
+        }
+
+        driver = new ChromeDriver(options);
         driver.get("http://testphp.vulnweb.com/login.php");
         driver.manage().window().maximize();
     }
+
     // Step 2: When the user enters a valid username and password
     @When("the user enters a valid username and password")
     public void userEntersValidCredentials() {
-        // Enter username
-        //WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(2)); // Wait for the page to load
         driver.findElement(By.name("uname")).sendKeys("test");
-        // Enter password
         driver.findElement(By.name("pass")).sendKeys("test");
-        // Click login button
         waitSec(2);
         driver.findElement(By.xpath("//input[@value='login']")).click();
         waitSec(2);
@@ -44,26 +51,21 @@ public class LoginSteps {
     // Step 3: Then the user should be logged in successfully
     @Then("the user should be logged in successfully")
     public void userShouldBeLoggedIn() {
-        // Verify login success (e.g., check if the user is redirected to the dashboard)
-        assertTrue(driver.getTitle().contains("user info"));  // Replace with actual page title or element
+        assertTrue(driver.getTitle().contains("user info"));
     }
-    
+
     // Step 4: When the user enters an invalid username and password
     @When("the user enters an invalid username and password")
     public void userEntersInvalidCredentials() {
-        // Enter invalid username
-    	driver.findElement(By.name("uname")).sendKeys("test22");
-        // Enter invalid password
-    	driver.findElement(By.name("pass")).sendKeys("invalid33");
-        // Click login button
-    	driver.findElement(By.xpath("//input[@value='login']")).click();
+        driver.findElement(By.name("uname")).sendKeys("test22");
+        driver.findElement(By.name("pass")).sendKeys("invalid33");
+        driver.findElement(By.xpath("//input[@value='login']")).click();
         waitSec(1);
     }
 
     // Step 5: Then the user should see an error message (invalid login)
     @Then("the user should see an error message")
     public void userShouldSeeErrorMessage() {
-    	// Verify login failure (e.g., check if the user is still in login page)
         assertTrue(driver.getTitle().contains("login page"));
     }
 
@@ -77,17 +79,15 @@ public class LoginSteps {
 
     @Then("the user information should be updated")
     public void userInfoShouldBeUpdated() {
-        // Check for a success message or updated value
         assertEquals("newemail@example.com", driver.findElement(By.name("uemail")).getAttribute("value"));
     }
 
     @Then("the user should see {string} on the home page")
     public void userShouldSeeCartCount(String expectedText) {
         List<WebElement> allStories = driver.findElements(By.cssSelector("div.story p"));
-        WebElement cartMessage = allStories.get(allStories.size() - 1); 
+        WebElement cartMessage = allStories.get(allStories.size() - 1);
         String actualText = cartMessage.getText();
         waitSec(2);
-        //assertEquals(expectedText, actualText);
         assertTrue(actualText.contains(expectedText));
     }
 
@@ -101,15 +101,11 @@ public class LoginSteps {
         assertTrue(driver.getTitle().toLowerCase().contains("logout"));
     }
 
-
-    // Additional step to close the browser after the test
-    //@Then("close the browser")
     @After
     public void closeBrowser() {
-        driver.quit();  // Close the browser after test completion
+        driver.quit();
     }
 
-    // Helper method to wait for given seconds
     void waitSec(int seconds) {
         try {
             Thread.sleep(seconds * 1000L);
@@ -117,7 +113,7 @@ public class LoginSteps {
             Thread.currentThread().interrupt();
         }
     }
-    
+
     // Step 1: Given the user is on the login page
     // Duplicate step definition for: Given the user is on the login page
     // This method launches the Chrome browser and opens the login page using a hardcoded driver path.
@@ -129,5 +125,4 @@ public class LoginSteps {
         //driver.get("http://testphp.vulnweb.com/login.php");  // Replace with your login page URL
         //driver.manage().window().maximize();
     //}
-
 }
