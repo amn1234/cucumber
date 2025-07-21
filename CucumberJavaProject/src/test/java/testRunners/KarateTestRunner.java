@@ -1,11 +1,11 @@
-// package testRunners;
+package testRunners;
 
-// import com.intuit.karate.junit5.Karate;
+import com.intuit.karate.junit5.Karate;
 
-// class KarateTestRunner {
+class KarateTestRunner {
 
-//     @Karate.Test
-//     Karate testLoginAPI() {
-//         return Karate.run("classpath:Features/api_test.feature").relativeTo(getClass());
-//     }
-// }
+    @Karate.Test
+    Karate testLoginAPI() {
+        return Karate.run("classpath:Features/api_test.feature").relativeTo(getClass());
+    }
+}

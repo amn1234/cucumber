@@ -14,6 +14,6 @@ features = "src/test/resources/Features/login.feature",  // Run only login.featu
         "junit:target/cucumber-reports/cucumber.xml"
     }
 )
-public class TestRunnerTest {
+public class RunCucumberTest {
 
 }
