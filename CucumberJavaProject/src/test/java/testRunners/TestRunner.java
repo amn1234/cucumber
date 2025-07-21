@@ -6,7 +6,13 @@ import io.cucumber.junit.CucumberOptions;
 @CucumberOptions(
 features = "src/test/resources/Features/login.feature",  // Run only login.feature    
 //features = "src/test/resources/Features",  // Path to feature files
-    glue = "stepDefinitions"                  // Package where step definitions are
+     glue = "stepDefinitions",
+    plugin = {
+        "pretty",
+        "html:target/cucumber-reports/cucumber-html-report.html",
+        "json:target/cucumber-reports/cucumber.json",
+        "junit:target/cucumber-reports/cucumber.xml"
+    }
 )
 public class TestRunner {
 
