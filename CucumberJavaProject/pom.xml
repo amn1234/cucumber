@@ -63,6 +63,7 @@
             <version>5.11.4</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-launcher</artifactId>
@@ -84,7 +85,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Surefire Plugin -->
+            <!-- Maven Surefire Plugin for both JUnit 4 and JUnit 5 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -93,11 +94,24 @@
                     <argLine>--add-exports java.base/sun.misc=ALL-UNNAMED</argLine>
                     <useModulePath>false</useModulePath>
                     <includes>
-                        <!-- Only run these test classes -->
                         <include>**/RunCucumber*.java</include>
                         <include>**/Karate*.java</include>
                     </includes>
                 </configuration>
+                <dependencies>
+                    <!-- Surefire provider for JUnit 4 -->
+                    <dependency>
+                        <groupId>org.apache.maven.surefire</groupId>
+                        <artifactId>surefire-junit4</artifactId>
+                        <version>3.0.0-M5</version>
+                    </dependency>
+                    <!-- Surefire provider for JUnit 5 -->
+                    <dependency>
+                        <groupId>org.apache.maven.surefire</groupId>
+                        <artifactId>surefire-junit-platform</artifactId>
+                        <version>3.0.0-M5</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>
