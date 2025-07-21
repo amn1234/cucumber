@@ -1,0 +1,48 @@
+name: Run Cucumber Selenium Tests
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  cucumber-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Set up Chrome for Selenium
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: stable
+
+      - name: Cache Maven dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Build and run tests
+        run: |
+          cd CucumberJavaProject
+          mvn clean test -Dtest=TestRunner -X
+
+      - name: Upload Cucumber HTML Report
+        if: always()  # ensure this step runs even if tests fail
+        uses: actions/upload-artifact@v4
+        with:
+          name: cucumber-html-report
+          path: CucumberJavaProject/target/cucumber-reports/cucumber-html-report.html
