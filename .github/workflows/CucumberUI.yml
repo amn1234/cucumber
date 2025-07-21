@@ -29,12 +29,17 @@ jobs:
 
       - name: Debug Directory Structure
         run: |
-          echo "Root:"
+          echo "Root directory contents:"
           ls -al
-          echo "Features:"
+          echo "Features directory contents:"
           ls -al CucumberJavaProject/src/test/resources/Features || echo "Missing features folder!"
 
-      - name: Run Only login.feature
+      - name: List Test Classes
+        run: |
+          echo "Listing Java test classes:"
+          find CucumberJavaProject/src/test/java -name "*Test*.java" || echo "No test classes found!"
+
+      - name: Run Only testRunners.TestRunner
         run: |
           cd CucumberJavaProject
           mvn clean test -Dtest=testRunners.TestRunner -Dcucumber.features=src/test/resources/Features/login.feature -X
