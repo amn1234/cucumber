@@ -80,10 +80,22 @@ jobs:
       - name: Run high-risk tests
         run: |
           cd CucumberJavaProject
-          mvn test -Dkarate.options="--tags @risk_high"
+          mvn test -Dtest=KarateTestRunner2 -Dkarate.options="--tags @risk_high"
 
       - name: Run medium/low risk tests
         if: ${{ github.event_name == 'schedule' }}
         run: |
           cd CucumberJavaProject
-          mvn test -Dkarate.options="--tags @risk_medium,@risk_low"
+          mvn test -Dtest=KarateTestRunner2 -Dkarate.options="--tags @risk_medium,@risk_low"
+
+      - name: Archive Karate HTML Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: rbt-karate-reports
+          path: CucumberJavaProject/target/karate-reports/karate-summary.html
+
+      - name: Archive Full Karate Report Directory
+        uses: actions/upload-artifact@v4
+        with:
+          name: rbt-karate-full-reports
+          path: CucumberJavaProject/target/karate-reports/
