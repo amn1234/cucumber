@@ -29,10 +29,10 @@
             <version>4.27.0</version>
         </dependency>
         <dependency>
-        <groupId>io.github.bonigarcia</groupId>
-        <artifactId>webdrivermanager</artifactId>
-        <version>5.7.0</version>
-        <scope>test</scope>
+            <groupId>io.github.bonigarcia</groupId>
+            <artifactId>webdrivermanager</artifactId>
+            <version>5.7.0</version>
+            <scope>test</scope>
         </dependency>
 
         <!-- Karate dependencies -->
@@ -50,7 +50,15 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- JUnit Jupiter API and Engine -->
+        <!-- JUnit 4 dependency (needed for your Cucumber runner) -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- JUnit Jupiter API and Engine (JUnit 5) -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
@@ -94,15 +102,15 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0-M5</version>
                 <configuration>
-                    <!-- Add JVM arguments for unsafe access -->
                     <argLine>--add-exports java.base/sun.misc=ALL-UNNAMED</argLine>
-                    <!-- Set system properties if necessary for the tests -->
                     <systemProperties>
                         <property>
                             <name>user.timezone</name>
                             <value>UTC</value>
                         </property>
                     </systemProperties>
+                    <!-- Optional: ensure module path issues avoided -->
+                    <useModulePath>false</useModulePath>
                 </configuration>
             </plugin>
         </plugins>
