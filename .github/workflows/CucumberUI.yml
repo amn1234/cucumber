@@ -1,4 +1,4 @@
-name: Run Login Feature Tests 
+name: Run Cucumber Feature
 
 on:
   push:
@@ -39,7 +39,7 @@ jobs:
           echo "Listing Java test classes:"
           find CucumberJavaProject/src/test/java -name "*Test*.java" || echo "No test classes found!"
 
-      - name: Run TestRunnerTest
+      - name: Run Only TestRunnerTest
         run: |
           cd CucumberJavaProject
           mvn clean test -Dtest=testRunners.TestRunnerTest -X
