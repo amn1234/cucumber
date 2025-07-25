@@ -1,0 +1,103 @@
+name: Run Login Feature Tests with RBT
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+    inputs:
+      risk:
+        description: 'Risk Level to Test'
+        required: true
+        default: 'high'
+        type: choice
+        options:
+          - high
+          - medium
+          - low
+  schedule:
+    - cron: '0 22 * * *'  # Runs every day at 10 PM UTC
+
+jobs:
+  cucumber-tests:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        risk: [high, medium, low]
+
+    continue-on-error: true
+
+    steps:
+      - name: Check if step should run
+        id: should_run
+        run: |
+          echo "Evaluating execution..."
+          if [[ "${{ github.event_name }}" == "push" || "${{ github.event_name }}" == "pull_request" ]]; then
+            if [[ "${{ matrix.risk }}" == "high" ]]; then
+              echo "run=true" >> $GITHUB_OUTPUT
+            else
+              echo "run=false" >> $GITHUB_OUTPUT
+            fi
+          elif [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            if [[ "${{ github.event.inputs.risk }}" == "${{ matrix.risk }}" ]]; then
+              echo "run=true" >> $GITHUB_OUTPUT
+            else
+              echo "run=false" >> $GITHUB_OUTPUT
+            fi
+          elif [[ "${{ github.event_name }}" == "schedule" ]]; then
+            echo "run=true" >> $GITHUB_OUTPUT
+          else
+            echo "run=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Checkout code
+        if: steps.should_run.outputs.run == 'true'
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        if: steps.should_run.outputs.run == 'true'
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Install Maven
+        if: steps.should_run.outputs.run == 'true'
+        run: sudo apt-get update && sudo apt-get install -y maven
+
+      - name: Debug Directory Structure
+        if: steps.should_run.outputs.run == 'true'
+        run: |
+          echo "Root directory contents:"
+          ls -al
+          echo "Features directory contents:"
+          ls -al CucumberJavaProject/src/test/resources/Features || echo "Missing features folder!"
+
+      - name: List Test Classes
+        if: steps.should_run.outputs.run == 'true'
+        run: |
+          echo "Listing Java test classes:"
+          find CucumberJavaProject/src/test/java -name "*Test*.java" || echo "No test classes found!"
+
+      - name: Run Cucumber Tests for Risk Level
+        if: steps.should_run.outputs.run == 'true'
+        run: |
+          cd CucumberJavaProject
+          mvn clean test -Dcucumber.filter.tags="@risk_${{ matrix.risk }}" -Dheadless=true -X
+
+      - name: Upload Cucumber HTML Report
+        if: steps.should_run.outputs.run == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: cucumber-html-report-${{ matrix.risk }}
+          path: CucumberJavaProject/target/cucumber-reports/cucumber-html-report.html
+
+      - name: Upload Full Cucumber Report Directory
+        if: steps.should_run.outputs.run == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: cucumber-full-reports-${{ matrix.risk }}
+          path: CucumberJavaProject/target/cucumber-reports/
